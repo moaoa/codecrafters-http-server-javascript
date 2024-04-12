@@ -50,7 +50,7 @@ const server = net.createServer((socket) => {
     } else if (path.startsWith("/files")) {
       const fileName = path.slice("/files/");
 
-      const directory = argv[3] ?? __dirname;
+      const directory = process.argv[3] ?? __dirname;
 
       const filePath = pathUtil.join(directory, fileName);
 
