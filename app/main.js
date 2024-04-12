@@ -9,8 +9,15 @@ const server = net.createServer((socket) => {
     socket.end();
     server.close();
   });
-  socket.on("data", () => {
-    socket.write("HTTP/1.1  200 OK\r\n\r\n", console.error);
+  socket.on("data", (data) => {
+    const requestLine = data.toString().split("\r\n")[0];
+    const [requestMethod, path, httpVersion] = requestLine.split(" ");
+    console.log("path: ", path);
+    if (path === "/") {
+      socket.write("HTTP/1.1  200 OK\r\n\r\n", console.error);
+    } else {
+      socket.write("HTTP/1.1  404 Not Found\r\n\r\n", console.error);
+    }
   });
 });
 
