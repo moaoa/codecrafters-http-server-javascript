@@ -1,4 +1,6 @@
 const net = require("net");
+const fs = require("fs");
+const path = require("path");
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
@@ -45,6 +47,20 @@ const server = net.createServer((socket) => {
       socket.write(`Content-Length: ${userAgent.length}\r\n\r\n`);
       socket.write(userAgent);
       console.log(userAgent);
+    } else if (path.startsWith("/files")) {
+      const fileName = path.slice("/files/");
+      const filePath = path.join(__dirname, fileName);
+
+      if (!fileExists(filePath)) {
+        socket.write("HTTP/1.1  404 Not Found\r\n\r\n", console.error);
+        return;
+      }
+      const data = fs.readFileSync(filePath, "utf8");
+
+      socket.write("HTTP/1.1  200 OK\r\n");
+      socket.write("Content-Type: application/octet-stream\r\n");
+      socket.write(`Content-Length: ${data.length}\r\n\r\n`);
+      socket.write(data);
     } else {
       socket.write("HTTP/1.1  404 Not Found\r\n\r\n", console.error);
     }
@@ -57,3 +73,8 @@ const server = net.createServer((socket) => {
 });
 
 server.listen(4221, "localhost");
+
+function fileExists(path, fileName) {
+  const dir = fs.readdirSync(path);
+  return dir.some((directory) => directory === fileName);
+}
