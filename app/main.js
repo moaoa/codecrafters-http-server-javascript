@@ -49,12 +49,16 @@ const server = net.createServer((socket) => {
       console.log(userAgent);
     } else if (path.startsWith("/files")) {
       const fileName = path.slice("/files/");
-      const filePath = pathUtil.join(__dirname, fileName);
+
+      const directory = argv[3] ?? __dirname;
+
+      const filePath = pathUtil.join(directory, fileName);
 
       if (!fs.existsSync(filePath)) {
         socket.write("HTTP/1.1  404 Not Found\r\n\r\n", console.error);
         return;
       }
+
       const data = fs.readFileSync(filePath, "utf8");
 
       socket.write("HTTP/1.1  200 OK\r\n");
