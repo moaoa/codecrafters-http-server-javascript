@@ -21,11 +21,13 @@ const server = net.createServer((socket) => {
 
     while (requestParts[i] !== "") {
       const keyValuePairs = requestParts[i].split(":");
-      const key = keyValuePairs[0];
-      const value = keyValuePairs[1];
+      const key = keyValuePairs[0].trim();
+      const value = keyValuePairs[1].trim();
       headers[key] = value;
       i++;
     }
+
+    console.log("headers: ", headers);
 
     if (path === "/") {
       socket.write("HTTP/1.1  200 OK\r\n\r\n", console.error);
