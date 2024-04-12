@@ -18,10 +18,10 @@ const server = net.createServer((socket) => {
     } else if (path.startsWith("/echo")) {
       const data = path.slice("/echo/".length);
       console.log(data);
-      socket.write(
-        "HTTP/1.1  200 Ok\r\n\r\n  Content-Type: text/plain " + data,
-        console.error
-      );
+      socket.write("HTTP/1.1  200 OK\r\n");
+      socket.write("Content-Type:  text/plain\r\n");
+      socket.write(`Content-Length:  ${data.length}\r\n\r\n`);
+      socket.write(data);
     } else {
       socket.write("HTTP/1.1  404 Not Found\r\n\r\n", console.error);
     }
