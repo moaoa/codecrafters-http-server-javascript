@@ -9,7 +9,7 @@ console.log("Logs from your program will appear here!");
 const server = net.createServer((socket) => {
   socket.on("close", () => {
     // socket.end();
-    server.close();
+    // server.close();
   });
   socket.on("data", (data) => {
     const requestLine = data.toString().split("\r\n")[0];
@@ -51,7 +51,7 @@ const server = net.createServer((socket) => {
       const fileName = path.slice("/files/");
       const filePath = pathUtil.join(__dirname, fileName);
 
-      if (!fileExists(filePath)) {
+      if (!fs.existsSync(filePath)) {
         socket.write("HTTP/1.1  404 Not Found\r\n\r\n", console.error);
         return;
       }
@@ -73,8 +73,3 @@ const server = net.createServer((socket) => {
 });
 
 server.listen(4221, "localhost");
-
-function fileExists(path, fileName) {
-  const dir = fs.readdirSync(path);
-  return dir.some((directory) => directory === fileName);
-}
