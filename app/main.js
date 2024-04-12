@@ -1,6 +1,6 @@
 const net = require("net");
 const fs = require("fs");
-const path = require("path");
+const pathUtil = require("path");
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
@@ -49,7 +49,7 @@ const server = net.createServer((socket) => {
       console.log(userAgent);
     } else if (path.startsWith("/files")) {
       const fileName = path.slice("/files/");
-      const filePath = path.join(__dirname, fileName);
+      const filePath = pathUtil.join(__dirname, fileName);
 
       if (!fileExists(filePath)) {
         socket.write("HTTP/1.1  404 Not Found\r\n\r\n", console.error);
