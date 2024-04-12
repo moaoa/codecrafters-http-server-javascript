@@ -19,7 +19,7 @@ const server = net.createServer((socket) => {
       const data = path.slice("/echo/".length);
       console.log(data);
       socket.write("HTTP/1.1  200 OK\r\n");
-      socket.write("Content-Type:  text/plain\r\n");
+      socket.write("Content-Type: text/plain\r\n");
       socket.write(`Content-Length:  ${data.length}\r\n\r\n`);
       socket.write(data);
     } else {
