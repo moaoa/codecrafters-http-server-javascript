@@ -37,13 +37,12 @@ const server = net.createServer((socket) => {
       socket.write(`Content-Length: ${data.length}\r\n\r\n`);
       socket.write(data);
     } else if (path.startsWith("/user-agent")) {
-      const data = path.replace("/user-agent/", "");
-
+      const userAgent = headers["User-Agent"];
       socket.write("HTTP/1.1  200 OK\r\n");
       socket.write("Content-Type: text/plain\r\n");
-      socket.write(`Content-Length: ${data.length}\r\n\r\n`);
-      socket.write(headers["User-Agent"]);
-      console.log(headers["User-Agent"]);
+      socket.write(`Content-Length: ${userAgent.length}\r\n\r\n`);
+      socket.write(userAgent);
+      console.log(userAgent);
     } else {
       socket.write("HTTP/1.1  404 Not Found\r\n\r\n", console.error);
     }
