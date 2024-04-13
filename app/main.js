@@ -29,7 +29,16 @@ const server = net.createServer((socket) => {
       i++;
     }
 
+    let body = "";
+
+    while (i < requestParts.length) {
+      body += requestParts[i];
+      i++;
+    }
+
     console.log("headers: ", headers);
+    console.log("method: ", requestMethod);
+    console.log("body: ", body);
 
     if (path === "/") {
       socket.write("HTTP/1.1  200 OK\r\n\r\n", console.error);
@@ -47,7 +56,7 @@ const server = net.createServer((socket) => {
       socket.write(`Content-Length: ${userAgent.length}\r\n\r\n`);
       socket.write(userAgent);
       console.log(userAgent);
-    } else if (path.startsWith("/files")) {
+    } else if (path.startsWith("/files") && requestMethod === "GET") {
       const fileName = path.replace("/files/", "");
 
       console.log(process.argv);
@@ -67,6 +76,20 @@ const server = net.createServer((socket) => {
         socket.write(`Content-Length: ${data.length}\r\n\r\n`);
         socket.write(data);
       }
+    } else if (path.startsWith("/files") && requestMethod === "POST") {
+      const fileName = path.replace("/files/", "");
+
+      console.log(process.argv);
+      const directory = process.argv[3] ?? __dirname;
+
+      const filePath = pathUtil.join(directory, fileName);
+
+      console.log("content: ", body);
+      fs.writeFileSync(filePath, body);
+
+      socket.write("HTTP/1.1  201 OK\r\n");
+      socket.write("Content-Type: application/octet-stream\r\n");
+      socket.write(`Content-Length: ${body.length}\r\n\r\n`);
     } else {
       socket.write("HTTP/1.1  404 Not Found\r\n\r\n", console.error);
     }
