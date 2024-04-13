@@ -48,18 +48,20 @@ const server = net.createServer((socket) => {
       socket.write(userAgent);
       console.log(userAgent);
     } else if (path.startsWith("/files")) {
-      const fileName = path.slice("/files/");
+      const fileName = path.replace("/files/", "");
 
       const directory = process.argv[3] ?? __dirname;
 
       const filePath = pathUtil.join(directory, fileName);
 
       if (!fs.existsSync(filePath)) {
+        console.log(404);
         socket.write("HTTP/1.1  404 Not Found\r\n\r\n", console.error);
         return;
       }
 
       const data = fs.readFileSync(filePath, "utf8");
+      console.log("content: ", data);
 
       socket.write("HTTP/1.1  200 OK\r\n");
       socket.write("Content-Type: application/octet-stream\r\n");
